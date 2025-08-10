@@ -18,3 +18,9 @@ project "Webserver"
 
     filter "configurations:Release"
         optimize "On"
+
+    filter "system:windows"
+        defines { "PLATFORM_WINDOWS" }
+
+    filter "system:linux"
+        defines { "PLATFORM_LINUX" }

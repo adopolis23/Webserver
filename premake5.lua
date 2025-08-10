@@ -13,6 +13,7 @@ project "Webserver"
     files { "src/**.cpp" }
     includedirs { "src" }
 
+
     filter "configurations:Debug"
     symbols "On"
 
@@ -20,6 +21,7 @@ project "Webserver"
         optimize "On"
 
     filter "system:windows"
+        links { "ws2_32" }
         defines { "PLATFORM_WINDOWS" }
 
     filter "system:linux"

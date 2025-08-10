@@ -1,10 +1,14 @@
 #pragma once
 
+#include "../Core.h"
+#include <iostream>
+
 #ifdef PLATFORM_WINDOWS
 	#include <winsock2.h>
 #else
 	#include <sys/socket.h>
 #endif
+
 
 namespace webserver
 {
@@ -20,6 +24,8 @@ namespace webserver
 		int m_domain;
 		int m_type;
 		int m_protocol;
+
+		WSADATA m_wsaData;
 
 
 	};

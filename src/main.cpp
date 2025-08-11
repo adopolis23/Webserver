@@ -1,12 +1,9 @@
 #include <stdio.h>
-
-#include "socket/SocketBase.h"
+#include <spdlog/spdlog.h>
 
 int main(int argc, char** argv)
 {
-    printf("Starting Main\n");
-
-    webserver::SocketBase socket(AF_INET, SOCK_STREAM, 0);
+    spdlog::info("Starting Main");
 
     return 0;
 }

@@ -11,8 +11,12 @@ project "Webserver"
     objdir "bin-int/%{cfg.buildcfg}"
 
     files { "src/**.cpp" }
+    files { "src/**.h" }
     includedirs { "src" }
 
+
+    externalincludedirs { "vendor/spdlog/include" }
+    defines { "FMT_UNICODE=0" }
 
     filter "configurations:Debug"
     symbols "On"

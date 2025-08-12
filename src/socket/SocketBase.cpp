@@ -20,7 +20,7 @@ webserver::SocketBase::SocketBase(const char* ipAddress, int port, int domain, i
 
 	if (m_socket < 0)
 	{
-		spdlog::error("Failed to create Listener Socket");
+		spdlog::error("Failed to create Listener Socket: {}", m_socket);
 		exit(1);
 	}
 	else
@@ -33,10 +33,19 @@ webserver::SocketBase::SocketBase(const char* ipAddress, int port, int domain, i
 	m_socketAddress.sin_port = htons(m_port);
 	m_socketAddress.sin_addr.s_addr = inet_addr(m_ipAddress);
 
-	if (bind(m_socket, (sockaddr*)&m_socketAddress, sizeof(m_socketAddress)) < 0)
+	int bind_error_code = bind(m_socket, (sockaddr*)&m_socketAddress, sizeof(m_socketAddress));
+	if (bind_error_code < 0)
 	{
-		spdlog::error("Cannot connect socket to address");
+		#ifdef PLATFORM_WINDOWS
+			int errorCode = WSAGetLastError();
+			spdlog::error("Cannot bind socket: {} ({})", errorCode, GetWSAErrorMessage(errorCode));
+		#else
+			spdlog::error("Cannot bind socket to address: {}", bind_error_code);
+		#endif
+
 		exit(1);
+
+
 	}
 	else
 	{
@@ -68,5 +77,23 @@ void webserver::SocketBase::StartListening()
 		spdlog::info("Listening on {} PORT: {}", inet_ntoa(m_socketAddress.sin_addr), ntohs(m_socketAddress.sin_port));
 	}
 
-	return 0;
+}
+
+std::string webserver::SocketBase::GetWSAErrorMessage(int errorCode)
+{
+#ifdef PLATFORM_WINDOWS
+	char* msgBuf = nullptr;
+	FormatMessageA(
+		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+		nullptr,
+		errorCode,
+		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+		(LPSTR)&msgBuf,
+		0,
+		nullptr);
+
+	std::string message = msgBuf ? msgBuf : "Unknown error";
+	LocalFree(msgBuf);
+	return message;
+#endif
 }

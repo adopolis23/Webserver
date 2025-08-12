@@ -1,6 +1,7 @@
 #pragma once
 
 #include "socket/SocketBase.h"
+#include <spdlog/spdlog.h>
 
 namespace webserver
 {
@@ -14,7 +15,7 @@ namespace webserver
 
 	private:
 
-		SocketBase m_socket;
+		SocketBase* m_socket;
 
 	};
 

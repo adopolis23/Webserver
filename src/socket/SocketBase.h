@@ -3,6 +3,7 @@
 #include "../Core.h"
 #include <iostream>
 #include <spdlog/spdlog.h>
+#include <string>
 
 #ifdef PLATFORM_WINDOWS
 	#include <winsock2.h>
@@ -21,6 +22,8 @@ namespace webserver
 		~SocketBase();
 
 		void StartListening();
+
+		std::string GetWSAErrorMessage(int errorCode);
 
 	private:
 		unsigned int m_socket;

@@ -81,19 +81,19 @@ void webserver::SocketBase::StartListening()
 
 std::string webserver::SocketBase::GetWSAErrorMessage(int errorCode)
 {
-#ifdef PLATFORM_WINDOWS
-	char* msgBuf = nullptr;
-	FormatMessageA(
-		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-		nullptr,
-		errorCode,
-		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-		(LPSTR)&msgBuf,
-		0,
-		nullptr);
+	#ifdef PLATFORM_WINDOWS
+		char* msgBuf = nullptr;
+		FormatMessageA(
+			FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+			nullptr,
+			errorCode,
+			MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+			(LPSTR)&msgBuf,
+			0,
+			nullptr);
 
-	std::string message = msgBuf ? msgBuf : "Unknown error";
-	LocalFree(msgBuf);
-	return message;
-#endif
+		std::string message = msgBuf ? msgBuf : "Unknown error";
+		LocalFree(msgBuf);
+		return message;
+	#endif
 }

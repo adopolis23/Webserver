@@ -6,3 +6,6 @@
 bin
 bin-int
 vendor
+Makefile
+Webserver
+*.make

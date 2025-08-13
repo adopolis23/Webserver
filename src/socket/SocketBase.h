@@ -4,11 +4,15 @@
 #include <iostream>
 #include <spdlog/spdlog.h>
 #include <string>
+#include <queue>
 
 #ifdef PLATFORM_WINDOWS
-	#include <winsock2.h>
+    #include <winsock2.h>
+    #include <ws2tcpip.h>
 #else
-	#include <sys/socket.h>
+    #include <netinet/in.h>
+    #include <arpa/inet.h>
+    #include <sys/socket.h>
 #endif
 
 
@@ -22,6 +26,7 @@ namespace webserver
 		~SocketBase();
 
 		void StartListening();
+		int GetConnection();
 
 		std::string GetWSAErrorMessage(int errorCode);
 
@@ -40,6 +45,7 @@ namespace webserver
 		#endif
 
 		struct sockaddr_in m_socketAddress;
+		socklen_t m_socketAddress_len;
 
 
 	};

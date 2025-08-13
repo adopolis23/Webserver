@@ -13,9 +13,12 @@ namespace webserver
 		Server(const char* ip, unsigned int port);
 		~Server();
 
+		void Start();
+
 	private:
 
 		SocketBase* m_socket;
+		bool m_Running;
 
 	};
 

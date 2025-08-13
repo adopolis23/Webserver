@@ -51,6 +51,8 @@ webserver::SocketBase::SocketBase(const char* ipAddress, int port, int domain, i
 	{
 		spdlog::info("Socket bound to address {} on port {}", inet_ntoa(m_socketAddress.sin_addr), ntohs(m_socketAddress.sin_port));
 	}
+
+	m_socketAddress_len = sizeof(m_socketAddress);
 }
 
 webserver::SocketBase::~SocketBase()
@@ -67,7 +69,7 @@ webserver::SocketBase::~SocketBase()
 
 void webserver::SocketBase::StartListening()
 {
-	if (listen(m_socket, 20) < 0)
+	if (listen(m_socket, m_connectionCapacity) < 0)
 	{
 		spdlog::error("Socket Listen Failed");
 		exit(1);
@@ -95,5 +97,24 @@ std::string webserver::SocketBase::GetWSAErrorMessage(int errorCode)
 		std::string message = msgBuf ? msgBuf : "Unknown error";
 		LocalFree(msgBuf);
 		return message;
+	#else
+		return "Function not implemented on Linux.";
 	#endif
+}
+
+//this function is blocking, accept will wait for a connection.
+int webserver::SocketBase::GetConnection()
+{
+	spdlog::info("Checking for incomming connections...");
+
+	int new_connection = accept(m_socket, (sockaddr *)&m_socketAddress, &m_socketAddress_len);
+	if (new_connection > 0)
+	{
+		spdlog::info("Accepted Connection on {} PORT: {}", inet_ntoa(m_socketAddress.sin_addr), ntohs(m_socketAddress.sin_port));
+		return new_connection;
+	}
+	else
+	{
+		spdlog::warn("'Accept' Returned {}", new_connection);
+	}
 }

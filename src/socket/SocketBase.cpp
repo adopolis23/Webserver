@@ -40,6 +40,7 @@ webserver::SocketBase::SocketBase(const char* ipAddress, int port, int domain, i
 			int errorCode = WSAGetLastError();
 			spdlog::error("Cannot bind socket: {} ({})", errorCode, GetWSAErrorMessage(errorCode));
 		#else
+			spdlog::error("errno = {} ({})\n", errno, strerror(errno));
 			spdlog::error("Cannot bind socket to address: {}", bind_error_code);
 		#endif
 

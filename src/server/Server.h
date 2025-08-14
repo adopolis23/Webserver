@@ -14,12 +14,15 @@ namespace webserver
 		~Server();
 
 		void Start();
+		void CloseSocket(int sock);
 
 	private:
 
 		SocketBase* m_socket;
+		int m_Connection;
 		bool m_Running;
 
+		const int BUFFER_SIZE = 4096;
 	};
 
 }

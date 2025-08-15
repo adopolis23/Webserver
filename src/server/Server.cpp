@@ -41,16 +41,26 @@ void webserver::Server::Start()
 		m_Connection = m_socket->GetConnection();
 
 		//read from socket
-		bytesRecv = read(m_Connection, buffer, BUFFER_SIZE);
+		#ifdef PLATFORM_WINDOWS
+			bytesRecv = recv(m_Connection, buffer, BUFFER_SIZE);
+		#else
+			bytesRecv = read(m_Connection, buffer, BUFFER_SIZE);
+		#endif
+
 		if (bytesRecv < 0)
 		{
 			spdlog::error("Failed to read from Socket");
+			CloseSocket(m_Connection);
+			continue;
 		}
-		else
-		{
-			spdlog::info("Recieved From Socket: {}", (char *)buffer);
-			spdlog::info("\n********END OF BUFFER*******");
-		}
+		
+
+		spdlog::info("Recieved From Socket: {}\n*******END OF BUFFER*********", (char *)buffer);
+		
+
+		
+
+
 
 
 		CloseSocket(m_Connection);

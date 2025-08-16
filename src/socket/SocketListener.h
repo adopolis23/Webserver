@@ -19,11 +19,20 @@
 namespace webserver
 {
 
-	class SocketBase
+	#ifdef PLATFORM_WINDOWS
+		using socket_t = SOCKET;
+		constexpr socket_t INVALID_SOCKET_VAL = INVALID_SOCKET;
+	#else
+		using socket_t = int;
+		constexpr socket_t INVALID_SOCKET_VAL = -1;
+	#endif
+
+	class SocketListener
 	{
+
 	public:
-		SocketBase(const char* ipAddress, int port, int domain, int type, int protocol);
-		~SocketBase();
+		SocketListener(const char* ipAddress, int port, int domain, int type, int protocol);
+		~SocketListener();
 
 		void StartListening();
 		int GetConnection();
@@ -31,7 +40,7 @@ namespace webserver
 		std::string GetWSAErrorMessage(int errorCode);
 
 	private:
-		unsigned int m_socket;
+		socket_t m_socket;
 		int m_domain;
 		int m_type;
 		int m_protocol;

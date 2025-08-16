@@ -1,6 +1,6 @@
-#include "SocketBase.h"
+#include "SocketListener.h"
 
-webserver::SocketBase::SocketBase(const char* ipAddress, int port, int domain, int type, int protocol) :
+webserver::SocketListener::SocketListener(const char* ipAddress, int port, int domain, int type, int protocol) :
 	m_ipAddress(ipAddress), m_port(port), m_domain(domain), m_type(type), m_protocol(protocol)
 {
 
@@ -18,7 +18,7 @@ webserver::SocketBase::SocketBase(const char* ipAddress, int port, int domain, i
 	//socket(AF_INET, SOCK_STREAM, 0);
 	m_socket = socket(domain, type, protocol);
 
-	if (m_socket < 0)
+	if (m_socket == INVALID_SOCKET_VAL)
 	{
 		spdlog::error("Failed to create Listener Socket: {}", m_socket);
 		exit(1);
@@ -56,7 +56,7 @@ webserver::SocketBase::SocketBase(const char* ipAddress, int port, int domain, i
 	m_socketAddress_len = sizeof(m_socketAddress);
 }
 
-webserver::SocketBase::~SocketBase()
+webserver::SocketListener::~SocketListener()
 {
 	#ifdef PLATFORM_WINDOWS
 		closesocket(m_socket);
@@ -68,7 +68,7 @@ webserver::SocketBase::~SocketBase()
 	#endif
 }
 
-void webserver::SocketBase::StartListening()
+void webserver::SocketListener::StartListening()
 {
 	if (listen(m_socket, m_connectionCapacity) < 0)
 	{
@@ -82,7 +82,7 @@ void webserver::SocketBase::StartListening()
 
 }
 
-std::string webserver::SocketBase::GetWSAErrorMessage(int errorCode)
+std::string webserver::SocketListener::GetWSAErrorMessage(int errorCode)
 {
 	#ifdef PLATFORM_WINDOWS
 		char* msgBuf = nullptr;
@@ -104,12 +104,12 @@ std::string webserver::SocketBase::GetWSAErrorMessage(int errorCode)
 }
 
 //this function is blocking, accept will wait for a connection.
-int webserver::SocketBase::GetConnection()
+int webserver::SocketListener::GetConnection()
 {
 	spdlog::info("Checking for incomming connections...");
 
-	int new_connection = accept(m_socket, (sockaddr *)&m_socketAddress, &m_socketAddress_len);
-	if (new_connection != INVALID_SOCKET)
+	socket_t new_connection = accept(m_socket, (sockaddr *)&m_socketAddress, &m_socketAddress_len);
+	if (new_connection != INVALID_SOCKET_VAL)
 	{
 		spdlog::info("Accepted Connection on {} PORT: {}", inet_ntoa(m_socketAddress.sin_addr), ntohs(m_socketAddress.sin_port));
 		return new_connection;
@@ -126,7 +126,7 @@ int webserver::SocketBase::GetConnection()
 			spdlog::error("Cannot bind socket to address: {}", bind_error_code);
 		#endif
 
-			exit(1);
+		exit(1);
 	}
 
 	return 0;

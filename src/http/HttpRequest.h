@@ -1,7 +1,16 @@
 
+#pragma once
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <spdlog/spdlog.h>
 
 namespace webserver
 {
+
+    #ifdef PLATFORM_WINDOWS
+        #define strtok_r strtok_s
+    #endif
     
     struct HttpHeader
     {
@@ -15,7 +24,7 @@ namespace webserver
     {
         
     public:
-        HttpRequest();
+        HttpRequest(const char* rawRequest);
         ~HttpRequest();
 
         void ParseRequest(const char* rawRequest);

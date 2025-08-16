@@ -5,7 +5,7 @@ webserver::Server::Server(const char* ip, unsigned int port)
 {
 	spdlog::info("Initiallizing Server: Creating Socket...");
 
-	m_socket = new SocketBase(ip, port, AF_INET, SOCK_STREAM, 0);
+	m_socket = new SocketListener(ip, port, AF_INET, SOCK_STREAM, 0);
 }
 
 webserver::Server::~Server()
@@ -54,11 +54,12 @@ void webserver::Server::Start()
 			continue;
 		}
 		
-
 		spdlog::info("Recieved From Socket: {}\n*******END OF BUFFER*********", (char *)buffer);
 		
 
-		
+		//create the httpHeader object and parse request
+		HttpRequest request(buffer);
+
 
 
 

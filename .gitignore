@@ -5,7 +5,7 @@
 .vs
 bin
 bin-int
-vendor
+#vendor
 Makefile
 Webserver
 *.make

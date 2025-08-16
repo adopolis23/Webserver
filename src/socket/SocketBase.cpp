@@ -109,7 +109,7 @@ int webserver::SocketBase::GetConnection()
 	spdlog::info("Checking for incomming connections...");
 
 	int new_connection = accept(m_socket, (sockaddr *)&m_socketAddress, &m_socketAddress_len);
-	if (new_connection > 0)
+	if (new_connection != INVALID_SOCKET)
 	{
 		spdlog::info("Accepted Connection on {} PORT: {}", inet_ntoa(m_socketAddress.sin_addr), ntohs(m_socketAddress.sin_port));
 		return new_connection;
@@ -117,5 +117,17 @@ int webserver::SocketBase::GetConnection()
 	else
 	{
 		spdlog::warn("'Accept' Returned {}", new_connection);
+
+		#ifdef PLATFORM_WINDOWS
+			int errorCode = WSAGetLastError();
+			spdlog::error("Cannot bind socket: {} ({})", errorCode, GetWSAErrorMessage(errorCode));
+		#else
+			spdlog::error("errno = {} ({})\n", errno, strerror(errno));
+			spdlog::error("Cannot bind socket to address: {}", bind_error_code);
+		#endif
+
+			exit(1);
 	}
+
+	return 0;
 }

@@ -3,6 +3,8 @@
 #include "socket/SocketBase.h"
 #include <spdlog/spdlog.h>
 
+#define BUFFER_SIZE 4096
+
 namespace webserver
 {
 
@@ -22,7 +24,6 @@ namespace webserver
 		int m_Connection;
 		bool m_Running;
 
-		const int BUFFER_SIZE = 4096;
 	};
 
 }

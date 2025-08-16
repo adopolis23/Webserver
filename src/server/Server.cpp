@@ -16,7 +16,7 @@ void webserver::Server::CloseSocket(int sock)
 {
 	#ifdef PLATFORM_WINDOWS
 		closesocket(sock);
-		WSACleanup();
+		//WSACleanup();
 	#else
 		close(sock);
 	#endif
@@ -31,7 +31,7 @@ void webserver::Server::Start()
 
 	//create buffer to store data and null terminate.
 	char buffer[BUFFER_SIZE] = {0};
-	buffer[BUFFER_SIZE] = '\0';
+	buffer[BUFFER_SIZE-1] = '\0';
 
 	int bytesRecv = 0;
 
@@ -42,7 +42,7 @@ void webserver::Server::Start()
 
 		//read from socket
 		#ifdef PLATFORM_WINDOWS
-			bytesRecv = recv(m_Connection, buffer, BUFFER_SIZE);
+			bytesRecv = recv(m_Connection, buffer, BUFFER_SIZE, 0);
 		#else
 			bytesRecv = read(m_Connection, buffer, BUFFER_SIZE);
 		#endif

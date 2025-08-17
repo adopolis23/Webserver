@@ -2,15 +2,9 @@
 
 webserver::HttpRequest::HttpRequest(const char* rawRequest)
 {
-	m_Header = (HttpHeader*) malloc(sizeof(HttpHeader));
-
 	ParseRequest(rawRequest);
-
 }
 
-webserver::HttpRequest::~HttpRequest()
-{
-}
 
 void webserver::HttpRequest::ParseRequest(const char* rawRequest)
 {
@@ -31,17 +25,39 @@ void webserver::HttpRequest::ParseRequest(const char* rawRequest)
 		spdlog::warn("No CRLF found in request.");
 	}
 
+	//get method
 	char* tokenSpace = strtok_r(mutable_request, space, &saveptr_space);
-	strncpy(m_Header->Method, tokenSpace, METHOD_LENGTH);
-	m_Header->Method[METHOD_LENGTH] = '\0';
+	if (tokenSpace) strncpy(m_Method, tokenSpace, METHOD_LENGTH);
+	
 
+	//get request target
 	tokenSpace = strtok_r(NULL, space, &saveptr_space);
-	strncpy(m_Header->RequestTarget, tokenSpace, REQUEST_TARGET_LENGTH);
-	m_Header->RequestTarget[REQUEST_TARGET_LENGTH] = '\0';
+	if (tokenSpace) strncpy(m_RequestTarget, tokenSpace, REQUEST_TARGET_LENGTH);
+	
+
+	//get protocol
+	tokenSpace = strtok_r(NULL, space, &saveptr_space);
+	if (tokenSpace) strncpy(m_Protocol, tokenSpace, PROTOCOL_LENGTH);
+	
 
 }
 
-const webserver::HttpHeader* webserver::HttpRequest::GetHeader()
+
+
+
+
+
+const char* webserver::HttpRequest::GetMethod() const
 {
-	return m_Header;
+	return m_Method;
+}
+
+const char* webserver::HttpRequest::GetRequestTarget() const
+{
+	return m_RequestTarget;
+}
+
+const char* webserver::HttpRequest::GetProtocol() const
+{
+	return m_Protocol;
 }

@@ -12,33 +12,29 @@ namespace webserver
         #define strtok_r strtok_s
     #endif
     
-    struct HttpHeader
-    {
-        #define METHOD_LENGTH 4
-        #define REQUEST_TARGET_LENGTH 1024
-        #define PROTOCOL_LENGTH 16
-        #define HOST_LENGTH 512
 
-        char Method[METHOD_LENGTH + 1];
-        char RequestTarget[REQUEST_TARGET_LENGTH + 1];
-        char Protocol[PROTOCOL_LENGTH + 1];
-        char Host[HOST_LENGTH + 1];
-    };
+    #define METHOD_LENGTH 4
+    #define REQUEST_TARGET_LENGTH 512
+    #define PROTOCOL_LENGTH 16
+
 
     class HttpRequest
     {
         
     public:
         HttpRequest(const char* rawRequest);
-        ~HttpRequest();
+        ~HttpRequest() = default;
 
         void ParseRequest(const char* rawRequest);
-        const HttpHeader* GetHeader() const { return m_Header; }
 
-        const HttpHeader* GetHeader();
+        const char* GetMethod() const;
+        const char* GetRequestTarget() const;
+        const char* GetProtocol() const;
 
     private:
-        HttpHeader* m_Header;
+        char m_Method[METHOD_LENGTH + 1];
+        char m_RequestTarget[REQUEST_TARGET_LENGTH + 1];
+        char m_Protocol[PROTOCOL_LENGTH + 1];
         
     };
 

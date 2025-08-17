@@ -13,7 +13,7 @@ namespace webserver
 	{
 	public:
 
-		Server(const char* ip, unsigned int port);
+		Server(const char* rootFolder, const char* ip, unsigned int port);
 		~Server();
 
 		void Start();
@@ -21,7 +21,9 @@ namespace webserver
 
 	private:
 
-		SocketListener* m_socket;
+		const char* m_RootFolder;
+
+		SocketListener* m_Socket;
 		int m_Connection;
 		bool m_Running;
 

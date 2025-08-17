@@ -60,6 +60,8 @@ void webserver::Server::Start()
 		//create the httpHeader object and parse request
 		HttpRequest request(buffer);
 
+		spdlog::info("Method: {}", request.GetHeader()->Method);
+		spdlog::info("Request Target: {}", request.GetHeader()->RequestTarget);
 
 
 

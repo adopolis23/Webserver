@@ -14,10 +14,15 @@ namespace webserver
     
     struct HttpHeader
     {
-        char Method[4];
-        char RequestTarget[1024];
-        char Protocol[16];
-        char Host[1024];
+        #define METHOD_LENGTH 4
+        #define REQUEST_TARGET_LENGTH 1024
+        #define PROTOCOL_LENGTH 16
+        #define HOST_LENGTH 512
+
+        char Method[METHOD_LENGTH + 1];
+        char RequestTarget[REQUEST_TARGET_LENGTH + 1];
+        char Protocol[PROTOCOL_LENGTH + 1];
+        char Host[HOST_LENGTH + 1];
     };
 
     class HttpRequest
@@ -30,7 +35,8 @@ namespace webserver
         void ParseRequest(const char* rawRequest);
         const HttpHeader* GetHeader() const { return m_Header; }
 
-        
+        const HttpHeader* GetHeader();
+
     private:
         HttpHeader* m_Header;
         

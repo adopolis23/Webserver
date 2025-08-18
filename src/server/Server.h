@@ -3,8 +3,13 @@
 #include "socket/SocketListener.h"
 #include <spdlog/spdlog.h>
 #include "http/HttpRequest.h"
+#include "http/HttpResponse.h"
 
 #define BUFFER_SIZE 4096
+
+#ifdef PLATFORM_WINDOWS
+	#define close closesocket
+#endif
 
 namespace webserver
 {

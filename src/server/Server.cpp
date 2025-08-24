@@ -65,9 +65,11 @@ void webserver::Server::Start()
 		HttpResponse response;
 		response.SetProtocol("HTTP/1.1");
 		response.SetStatus(200);
+		response.SetTarget(request.GetRequestTarget());
 
 		//todo need to fix what is going on in this line maybe maybe tostring return a c string
-		int sent = send(m_Connection, response.ToString().c_str(), strlen(response.ToString().c_str()), 0);
+		int sent = send(m_Connection, response.ToString(), strlen(response.ToString()), 0);
+
 		if (sent < 0) {
 			spdlog::error("Send Error: {}", sent);
 			exit(1);

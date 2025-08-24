@@ -7,6 +7,7 @@ namespace webserver
 {
 
 	#define STATUS_TEXT_LENGTH 32
+	#define TARGET_LENGTH 128
 
 	class HttpResponse
 	{
@@ -17,14 +18,18 @@ namespace webserver
 
 		void SetProtocol(const char* protocol);
 		void SetStatus(unsigned int status);
+		void SetTarget(const char* target);
 
-		std::string ToString() const; // build full HTTP response header
+		void AddHeader(std::string name, std::string value);
+
+		const char* ToString() const; // build full HTTP response header
 
 	private:
 
 		std::string m_Protocol;
 		unsigned int m_StatusCode;
-		char m_StatusText[STATUS_TEXT_LENGTH + 1];
+		char m_StatusText[STATUS_TEXT_LENGTH + 1] = {};
+		char m_Target[TARGET_LENGTH + 1] = {};
 
 		std::map<std::string, std::string> m_Headers;
 		

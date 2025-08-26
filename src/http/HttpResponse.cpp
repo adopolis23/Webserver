@@ -45,17 +45,31 @@ void webserver::HttpResponse::SetStatus(unsigned int status)
 
 const char* webserver::HttpResponse::ToString() const
 {
-	std::ostringstream response;
+	std::ostringstream header;
 
 	//add header to response
-	response << m_Protocol << " " << m_StatusCode << " " << m_StatusText << "\r\n";
-	response << "\r\n";
+	header << m_Protocol << " " << m_StatusCode << " " << m_StatusText << "\r\n";
+	header << "\r\n";
 
-	return response.str().c_str(); 
+
+
+	return header.str().c_str(); 
 }
 
 
 void webserver::HttpResponse::AddHeader(std::string name, std::string value)
 {
-	m_Headers.insert(name, value);
+	m_Headers[name] = value;
+}
+
+std::string webserver::HttpResponse::m_GetContentType(const std::string& path)
+{
+
+	if (path.ends_with(".html")) return "text/html";
+    if (path.ends_with(".css"))  return "text/css";
+    if (path.ends_with(".js"))   return "application/javascript";
+    if (path.ends_with(".png"))  return "image/png";
+    if (path.ends_with(".jpg") || path.ends_with(".jpeg")) return "image/jpeg";
+    return "application/octet-stream";
+
 }

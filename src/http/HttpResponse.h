@@ -26,6 +26,8 @@ namespace webserver
 
 	private:
 
+		std::string m_GetContentType(const std::string& path);
+
 		std::string m_Protocol;
 		unsigned int m_StatusCode;
 		char m_StatusText[STATUS_TEXT_LENGTH + 1] = {};

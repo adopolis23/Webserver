@@ -6,7 +6,7 @@ int main(int argc, char** argv)
 {
     spdlog::info("Starting Main");
 
-    webserver::Server server("D:\dev\Webserver\host", "0.0.0.0", 8080);
+    webserver::Server server("/home/brandon/dev/Webserver/host", "0.0.0.0", 8080);
 
     server.Start();
 

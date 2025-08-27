@@ -1,5 +1,7 @@
 #pragma once
 #include <string>
+#include <fstream>
+#include <sstream>
 #include <unordered_map>
 #include "spdlog/spdlog.h"
 
@@ -13,7 +15,7 @@ namespace webserver
 	{
 
 	public:
-		HttpResponse();
+		HttpResponse(const char* rootFolder);
 		~HttpResponse() = default;
 
 		void SetProtocol(const char* protocol);
@@ -22,7 +24,7 @@ namespace webserver
 
 		void AddHeader(std::string name, std::string value);
 
-		const char* ToString() const; // build full HTTP response header
+		std::string ToString() const; // build full HTTP response header
 
 	private:
 
@@ -31,7 +33,8 @@ namespace webserver
 		std::string m_Protocol;
 		unsigned int m_StatusCode;
 		char m_StatusText[STATUS_TEXT_LENGTH + 1] = {};
-		char m_Target[TARGET_LENGTH + 1] = {};
+		std::string m_Target;
+		std::string m_rootFolder;
 
 		std::map<std::string, std::string> m_Headers;
 		

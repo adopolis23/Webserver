@@ -1,8 +1,8 @@
 #include "HttpResponse.h"
 
-webserver::HttpResponse::HttpResponse()
+webserver::HttpResponse::HttpResponse(const char* rootFolder)
 {
-
+	m_rootFolder = rootFolder;
 }
 
 void webserver::HttpResponse::SetProtocol(const char* protocol)
@@ -12,19 +12,20 @@ void webserver::HttpResponse::SetProtocol(const char* protocol)
 
 void webserver::HttpResponse::SetTarget(const char* target)
 {
-	strncpy(m_Target, target, sizeof(m_Target));
+	m_Target = target;
 
-	size_t target_length = std::strlen(m_Target);
+	size_t target_length = m_Target.length();
 
 	if (target_length > 0 && m_Target[target_length - 1] == '/')
 	{
 		//target ends with a / and we assume they want /index.html
 		const char* filename = "index.html";
+		
+		m_Target = m_Target + filename;
 
-		if (std::strlen(filename) + target_length < TARGET_LENGTH)
-		{
 
-		}
+		//add the correct content type
+		AddHeader("Content-Type", m_GetContentType(m_Target));
 
 	}
 }
@@ -43,17 +44,50 @@ void webserver::HttpResponse::SetStatus(unsigned int status)
 	}
 }
 
-const char* webserver::HttpResponse::ToString() const
+std::string webserver::HttpResponse::ToString() const
 {
-	std::ostringstream header;
+	std::string full_target = m_rootFolder + m_Target;
+	spdlog::info("Full path of requested file: {}", full_target);
 
-	//add header to response
-	header << m_Protocol << " " << m_StatusCode << " " << m_StatusText << "\r\n";
-	header << "\r\n";
+	//create body
+	std::ifstream file(full_target, std::ios::binary);
+	if (!file.is_open()) {
+		spdlog::error("Requested file is not found.");
+
+		std::string notFound = 
+			"HTTP/1.1 404 Not Found\r\n"
+			"Content-Type: text/plain\r\n"
+			"Content-Length: 13\r\n"
+			"\r\n"
+			"404 Not Found";
+		return notFound.c_str();
+	}
+
+	//read file into buffer
+    std::ostringstream bodyStream;
+    bodyStream << file.rdbuf();
 
 
+	//create header
+	std::ostringstream headerStream;
 
-	return header.str().c_str(); 
+	headerStream << m_Protocol << " " << m_StatusCode << " " << m_StatusText << "\r\n";
+
+	for (auto item : m_Headers)
+	{
+		headerStream << item.first << ":" << item.second << "\r\n";
+	}
+	headerStream << "Content-Length: " << bodyStream.str().size() << "\r\n";
+	headerStream << "\r\n";
+
+	spdlog::info("Header Created: {}", headerStream.str());
+
+
+	//create full response
+	std::string response;
+	response = headerStream.str() + bodyStream.str();
+
+	return response; 
 }
 
 

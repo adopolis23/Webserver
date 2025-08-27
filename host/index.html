@@ -1,1 +1,96 @@
-Test
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>C++ Webserver Demo</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #1d2b64, #f8cdda);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    h1 {
+      font-size: 3em;
+      margin-bottom: 0.2em;
+      animation: fadeInDown 1s ease;
+    }
+
+    p {
+      font-size: 1.2em;
+      margin-top: 0;
+      animation: fadeIn 2s ease;
+    }
+
+    button {
+      margin-top: 2em;
+      padding: 0.8em 2em;
+      font-size: 1em;
+      font-weight: bold;
+      color: #1d2b64;
+      background: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.2s, background 0.2s;
+    }
+
+    button:hover {
+      background: #f0f0f0;
+      transform: scale(1.05);
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* floating bubbles background */
+    .bubble {
+      position: absolute;
+      bottom: -100px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      animation: floatUp linear infinite;
+    }
+
+    @keyframes floatUp {
+      from { transform: translateY(0); opacity: 1; }
+      to { transform: translateY(-110vh); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <h1>🚀 Welcome to My C++ Webserver</h1>
+  <p>This is a simple demo page served directly from my C++ webserver I made from scratch.</p>
+  <p>This Project can be viewed at <a href="https://github.com/adopolis23/Webserver">https://github.com/adopolis23/Webserver</a></p>
+  <button onclick="alert('Your server is working perfectly!')">Test Me</button>
+
+  <script>
+    // Generate random floating bubbles
+    for (let i = 0; i < 20; i++) {
+      let bubble = document.createElement('div');
+      let size = Math.random() * 40 + 10;
+      bubble.className = 'bubble';
+      bubble.style.width = size + 'px';
+      bubble.style.height = size + 'px';
+      bubble.style.left = Math.random() * 100 + 'vw';
+      bubble.style.animationDuration = (Math.random() * 10 + 5) + 's';
+      document.body.appendChild(bubble);
+    }
+  </script>
+</body>
+</html>

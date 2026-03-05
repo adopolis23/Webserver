@@ -1,7 +1,10 @@
 #pragma once
 
-#include "socket/SocketListener.h"
+#include <queue>
+#include <thread>
+
 #include <spdlog/spdlog.h>
+#include "socket/SocketListener.h"
 #include "http/HttpRequest.h"
 #include "http/HttpResponse.h"
 
@@ -10,6 +13,8 @@
 #ifdef PLATFORM_WINDOWS
 	#define close closesocket
 #endif
+
+typedef int Connection;
 
 namespace webserver
 {
@@ -28,9 +33,22 @@ namespace webserver
 
 		const char* m_RootFolder;
 
+        // Thread to deal with accepting connection and placing in queue
+        std::thread m_AcceptorThread;
+
+        // Thread to deal with proccessing connections that have been accepted and are in queue
+        std::thread m_WorkerThread;
+
+        // queue to hold accepted connections
+        std::queue<Connection> m_ConnectionQueue;
+
+        void AcceptorThread();
+        void WorkerThread();
+
 		SocketListener* m_Socket;
 		int m_Connection;
-		bool m_Running;
+
+        std::atomic<bool> m_Running;
 
 	};
 

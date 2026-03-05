@@ -19,6 +19,21 @@ void webserver::Server::CloseSocket(int sock)
 	close(sock);
 }
 
+
+// thread for accepting incomming connections
+void webserver::Server::AcceptorThread()
+{
+    m_Socket->StartListening();  
+
+    while (m_Running)
+    {
+        // this is blocking
+        Connection conn = m_Socket->GetConnection();
+        m_ConnectionQueue.push(conn);
+    }
+}
+
+
 void webserver::Server::Start()
 {
 	spdlog::info("Starting Server");

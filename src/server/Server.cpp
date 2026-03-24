@@ -1,4 +1,5 @@
 #include "Server.h"
+#include <mutex>
 
 webserver::Server::Server(const char* rootFolder, const char* ip, unsigned int port)
 : m_Running(false), m_Connection(NULL), m_RootFolder(rootFolder)
@@ -29,7 +30,15 @@ void webserver::Server::AcceptorThread()
     {
         // this is blocking
         Connection conn = m_Socket->GetConnection();
-        m_ConnectionQueue.push(conn);
+
+        {
+            // this lock holds the mutex until it is destroyed
+            std::lock_guard<std::mutex> lock(m_QueueMutex);
+            m_ConnectionQueue.push(conn);
+        }
+
+        // notify one of the workers
+        m_QueueCV.notify_one();
     }
 }
 

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <condition_variable>
+#include <mutex>
 #include <queue>
 #include <thread>
 
@@ -41,6 +43,10 @@ namespace webserver
 
         // queue to hold accepted connections
         std::queue<Connection> m_ConnectionQueue;
+
+        // thread safety
+        std::mutex m_QueueMutex;
+        std::condition_variable m_QueueCV;
 
         void AcceptorThread();
         void WorkerThread();
